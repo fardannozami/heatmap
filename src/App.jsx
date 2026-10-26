@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, CalendarDays, ChevronDown, Clock3, Database, Download, Info, Search, SlidersHorizontal } from 'lucide-react';
+import { Activity, CalendarDays, ChevronDown, Clock3, Database, Download, Info, Monitor, Moon, Search, SlidersHorizontal, Sun } from 'lucide-react';
 
 const pad = (n) => String(n).padStart(2, '0');
 const timeLabel = (minute) => `${pad(Math.floor(minute / 60))}:${pad(minute % 60)}`;
@@ -11,6 +11,18 @@ function App() {
   const [query, setQuery] = useState('');
   const [direction, setDirection] = useState('ALL');
   const [selectedCell, setSelectedCell] = useState(null);
+  const [themeMode, setThemeMode] = useState('system');
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const applyTheme = () => {
+      const resolvedTheme = themeMode === 'system' ? (mediaQuery.matches ? 'dark' : 'light') : themeMode;
+      document.documentElement.dataset.theme = resolvedTheme;
+    };
+    applyTheme();
+    mediaQuery.addEventListener?.('change', applyTheme);
+    return () => mediaQuery.removeEventListener?.('change', applyTheme);
+  }, [themeMode]);
 
   const downloadPdf = () => {
     const previousTitle = document.title;
@@ -85,7 +97,7 @@ function App() {
           <span className="brand-mark"><Activity size={21} /></span>
           <span><strong>MARKET INTELLIGENCE</strong><small>MARKET RHYTHM</small></span>
         </a>
-        <div className="topbar-right"><span className="status-dot" /> Dataset tersedia <span className="topbar-divider" /> <span className="date-stamp">Updated {dataset.last_updated}</span><button className="download-button" onClick={downloadPdf} title="Unduh laporan sebagai PDF"><Download size={14} /><span>Unduh PDF</span></button></div>
+        <div className="topbar-right"><span className="status-dot" /> Dataset tersedia <span className="topbar-divider" /> <span className="date-stamp">Updated {dataset.last_updated}</span><div className="theme-switch" aria-label="Pilih tema"><button className={themeMode === 'system' ? 'active' : ''} onClick={() => setThemeMode('system')} aria-label="Gunakan tema sistem" aria-pressed={themeMode === 'system'} title="System"><Monitor size={13} /><span>System</span></button><button className={themeMode === 'light' ? 'active' : ''} onClick={() => setThemeMode('light')} aria-label="Gunakan light mode" aria-pressed={themeMode === 'light'} title="Light"><Sun size={13} /><span>Light</span></button><button className={themeMode === 'dark' ? 'active' : ''} onClick={() => setThemeMode('dark')} aria-label="Gunakan dark mode" aria-pressed={themeMode === 'dark'} title="Dark"><Moon size={13} /><span>Dark</span></button></div><button className="download-button" onClick={downloadPdf} title="Unduh laporan sebagai PDF"><Download size={14} /><span>Unduh PDF</span></button></div>
       </header>
 
       <main className="content">
