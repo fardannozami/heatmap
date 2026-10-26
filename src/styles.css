@@ -6,3 +6,92 @@
 
 .view-mode-panel{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 16px;padding:12px 14px;border:1px solid #28364b;border-radius:10px;background:#0f1928}.view-mode-label{font:500 9px 'DM Mono',monospace;letter-spacing:1.4px;color:#8292a8;margin-right:5px}.view-mode-button{border:1px solid #2b394c;background:#111e2f;color:#91a0b5;padding:9px 12px;border-radius:7px;font-size:11px;cursor:pointer}.view-mode-button:hover{border-color:#47717a;color:#d8f5f1}.view-mode-button.active{background:#17383f;border-color:#2b6c70;color:#8af2e4;box-shadow:inset 0 0 0 1px #1d5258}.heatmap-table:has(thead th:nth-child(7):last-child){min-width:790px}.heatmap-table:has(thead th:nth-child(7):last-child) thead th:not(.time-head){font-size:10px}
 @media(max-width:560px){.view-mode-panel{align-items:stretch}.view-mode-label{width:100%;margin-bottom:3px}.view-mode-button{flex:1;padding:9px 7px;font-size:10px}}
+
+/* Refined responsive layer */
+:root{
+  --ink:#eef4ff;
+  --muted:#8798b2;
+  --line:rgba(133,157,190,.16);
+  --line-strong:rgba(133,157,190,.25);
+  --surface:rgba(17,28,46,.82);
+  --surface-raised:#152238;
+  --accent:#77e4d3;
+}
+html{scroll-behavior:smooth}
+body{background:#080f1c;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;background-image:linear-gradient(rgba(120,152,191,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(120,152,191,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 75%);z-index:-1}
+.topbar{height:76px;border-bottom:1px solid var(--line);background:rgba(8,15,28,.72);backdrop-filter:blur(18px);position:sticky;top:0;z-index:10}
+.brand-mark{border-color:rgba(119,228,211,.35);background:linear-gradient(145deg,rgba(37,111,112,.65),rgba(16,42,57,.8));box-shadow:0 8px 24px rgba(47,193,178,.12)}
+.brand strong{letter-spacing:1.7px}
+.topbar-right{color:#b4c2d5}
+.content{padding-top:58px}
+.intro{margin-bottom:34px}
+.eyebrow{color:var(--accent);letter-spacing:2.4px}
+.intro h1{font-size:clamp(42px,5.5vw,70px);letter-spacing:-3px;margin-top:15px;text-shadow:0 10px 40px rgba(70,212,197,.12)}
+.intro h1 span{background:linear-gradient(105deg,#8ef1df,#61c8e8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{font-size:15px;color:#aebbd0;max-width:630px}
+.notice{border-color:rgba(203,184,112,.25);background:rgba(62,52,24,.32);border-radius:999px;padding:10px 15px;color:#ddd09f}
+.view-mode-panel,.control-panel{background:linear-gradient(135deg,rgba(21,35,56,.95),rgba(13,23,39,.92));border-color:var(--line-strong);box-shadow:0 10px 34px rgba(0,0,0,.12)}
+.view-mode-panel{padding:13px 16px;border-radius:14px}
+.view-mode-button,.period-button{transition:background .2s,border-color .2s,color .2s,transform .2s}
+.view-mode-button:hover,.period-button:hover{transform:translateY(-1px)}
+.view-mode-button.active,.period-button.active{background:linear-gradient(135deg,rgba(39,104,101,.75),rgba(22,61,70,.85));border-color:rgba(119,228,211,.45);color:#a0fff0;box-shadow:0 5px 18px rgba(45,172,158,.12),inset 0 0 0 1px rgba(119,228,211,.08)}
+.stats-grid{gap:14px;margin-bottom:30px}
+.stat-card{position:relative;overflow:hidden;border-color:var(--line);border-radius:14px;background:linear-gradient(145deg,rgba(20,34,55,.95),rgba(13,23,39,.9));box-shadow:0 8px 26px rgba(0,0,0,.1);transition:transform .2s,border-color .2s}
+.stat-card:after{content:"";position:absolute;width:100px;height:100px;right:-48px;bottom:-55px;border-radius:50%;background:rgba(119,228,211,.08);filter:blur(2px)}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(119,228,211,.32)}
+.stat-card>strong{font-size:28px}
+.heatmap-section{border-color:var(--line-strong);border-radius:16px;background:rgba(14,25,42,.9);box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.heatmap-heading{padding:27px 26px 21px}
+.heatmap-heading h2{font-size:25px;letter-spacing:-.8px}
+.heatmap-heading p{font-size:12px}
+.table-tools{padding:13px 20px;background:rgba(8,17,30,.58);border-color:var(--line)}
+.search-box,.direction-select select{border-color:var(--line-strong);background:rgba(22,37,59,.8);transition:border-color .2s,box-shadow .2s}
+.search-box:focus-within{border-color:rgba(119,228,211,.55);box-shadow:0 0 0 3px rgba(119,228,211,.08)}
+.heatmap-table thead th{background:#182941;border-bottom-color:var(--line-strong)}
+.heatmap-table tbody tr:hover .time-cell{background:#172940}
+.time-cell{background:#111f33;border-right-color:var(--line);border-bottom-color:rgba(133,157,190,.1)}
+.heat-cell-wrap{border-bottom-color:rgba(133,157,190,.08)}
+.heat-cell{min-height:31px;touch-action:manipulation}
+.heat-cell:hover{filter:brightness(1.22);transform:scale(1.035);box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.table-footer{background:rgba(8,17,30,.58);border-color:var(--line)}
+.detail-panel{border-color:rgba(119,228,211,.27);background:linear-gradient(115deg,rgba(22,60,65,.66),rgba(16,29,46,.92));box-shadow:0 12px 32px rgba(0,0,0,.12)}
+.source-note{border-color:rgba(203,184,112,.2);background:rgba(44,39,26,.48)}
+
+@media(max-width:700px){
+  .topbar{height:68px}
+  .content{padding-top:38px}
+  .topbar-right{gap:0}
+  .intro h1{letter-spacing:-2px}
+  .heatmap-section{border-radius:13px}
+  .heatmap-wrap{max-height:62vh;overscroll-behavior-x:contain}
+}
+@media(max-width:560px){
+  .topbar{height:62px}
+  .content{padding:28px 10px 18px}
+  .brand{gap:9px}
+  .brand-mark{width:34px;height:34px;border-radius:10px}
+  .intro{margin-bottom:25px}
+  .eyebrow{letter-spacing:1.7px}
+  .intro h1{font-size:40px;margin:11px 0 9px}
+  .subtitle{font-size:12px;line-height:1.65}
+  .notice{width:100%;justify-content:center;border-radius:10px;padding:9px 10px}
+  .view-mode-panel{gap:6px;padding:12px;border-radius:12px}
+  .view-mode-button{min-height:40px}
+  .control-panel{padding:12px;border-radius:12px}
+  .stats-grid{gap:9px;margin-bottom:22px}
+  .stat-card{padding:13px 12px;border-radius:12px}
+  .stat-card>strong{font-size:20px;margin-top:8px}
+  .stat-card>small{line-height:1.3;display:block;min-height:24px}
+  .stat-icon{width:27px;height:27px}
+  .heatmap-heading{padding:18px 14px 15px}
+  .heatmap-heading h2{font-size:19px}
+  .heatmap-heading p{font-size:11px;line-height:1.5}
+  .table-tools{padding:9px;gap:8px}
+  .search-box{padding:8px 9px}
+  .heatmap-table{min-width:760px}
+  .heatmap-table thead th{height:46px}
+  .time-cell{padding-left:12px}
+  .heatmap-table .time-head{padding-left:12px}
+  .detail-panel{padding:16px;border-radius:12px;margin-top:12px}
+}
