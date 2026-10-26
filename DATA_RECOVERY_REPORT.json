@@ -1,0 +1,11 @@
+{
+  "source_file": "Pasted text(3).txt",
+  "periods_recovered": 6,
+  "bytes_per_period_decoded": 100800,
+  "minutes_per_period": 1440,
+  "targets_per_minute": 10,
+  "cells_per_period": 14400,
+  "total_cells": 86400,
+  "source_last_updated": "2026.10.23 23:56",
+  "simulated_data_used": false
+}
