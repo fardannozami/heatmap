@@ -70,9 +70,9 @@ function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <a className="brand" href="#" aria-label="TM Chrono Heatmap home">
+        <a className="brand" href="#" aria-label="Market Intelligence home">
           <span className="brand-mark"><Activity size={21} /></span>
-          <span><strong>TRADER MINORITAS</strong><small>CHRONO HEATMAP</small></span>
+          <span><strong>MARKET INTELLIGENCE</strong><small>MARKET RHYTHM</small></span>
         </a>
         <div className="topbar-right"><span className="status-dot" /> Dataset tersedia <span className="topbar-divider" /> <span className="date-stamp">Updated {dataset.last_updated}</span></div>
       </header>
@@ -80,8 +80,8 @@ function App() {
       <main className="content">
         <section className="intro">
           <div className="eyebrow"><span className="eyebrow-line" /> HISTORICAL MARKET STATISTICS</div>
-          <h1>Chrono <span>Heatmap</span></h1>
-          <p className="subtitle">Jelajahi kecenderungan pergerakan harga berdasarkan waktu dan target pip dari data historis.</p>
+          <h1>Market <span>Rhythm</span></h1>
+          <p className="subtitle">Pahami ritme pergerakan harga berdasarkan waktu dan target pip melalui statistik historis yang terstruktur.</p>
           <div className="notice"><Info size={16} /><span>Statistik kecenderungan historis — bukan prediksi, sinyal, atau rekomendasi trading.</span></div>
         </section>
 
@@ -112,7 +112,7 @@ function App() {
 
         <section className="heatmap-section">
           <div className="heatmap-heading">
-            <div><div className="section-kicker"><Clock3 size={15} /> 24-HOUR OVERVIEW</div><h2>{viewMode === 'periods' ? 'Time × Historical Period' : 'Time × Pip Target'}</h2><p>{viewMode === 'periods' ? 'Bandingkan enam periode historis untuk target ±50 pip, seperti tampilan Chrono Heatmap 2.' : 'Setiap sel berisi arah dominan, probabilitas, dan jumlah observasi.'}</p></div>
+            <div><div className="section-kicker"><Clock3 size={15} /> 24-HOUR MARKET RHYTHM</div><h2>{viewMode === 'periods' ? 'Time × Historical Period' : 'Time × Pip Target'}</h2><p>{viewMode === 'periods' ? 'Bandingkan enam periode historis untuk melihat konsistensi ritme pasar pada target ±50 pip.' : 'Setiap sel memetakan arah dominan, probabilitas, dan jumlah observasi.'}</p></div>
             <div className="legend"><span><i className="legend-dot up" /> UP</span><span><i className="legend-dot down" /> DOWN</span><span><i className="legend-dot neutral" /> NEUTRAL</span></div>
           </div>
 
@@ -155,7 +155,7 @@ function App() {
         </section>}
 
         <section className="source-note"><Info size={17}/><div><strong>Catatan sumber data</strong><p>Dataset di aplikasi ini dipulihkan dari payload terenkode pada file HTML yang kamu unggah. Metadata sumber mencatat pembaruan terakhir <b>{dataset.last_updated}</b> dan asumsi spread {dataset.spread_assumption_pips} pip. Angka-angka ini tidak dihitung ulang dari feed pasar live. Hasil historis tidak menjamin hasil di masa depan.</p></div></section>
-        <footer><span>TM CHRONO HEATMAP</span><span>Historical tendency only · Not financial advice</span></footer>
+        <footer><span>MARKET INTELLIGENCE · MARKET RHYTHM</span><span>Historical tendency only · Not financial advice</span></footer>
       </main>
     </div>
   );
