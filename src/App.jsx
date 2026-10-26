@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Activity, CalendarDays, ChevronDown, Clock3, Database, Info, Search, SlidersHorizontal } from 'lucide-react';
+import { Activity, CalendarDays, ChevronDown, Clock3, Database, Download, Info, Search, SlidersHorizontal } from 'lucide-react';
 
 const pad = (n) => String(n).padStart(2, '0');
 const timeLabel = (minute) => `${pad(Math.floor(minute / 60))}:${pad(minute % 60)}`;
@@ -11,6 +11,17 @@ function App() {
   const [query, setQuery] = useState('');
   const [direction, setDirection] = useState('ALL');
   const [selectedCell, setSelectedCell] = useState(null);
+
+  const downloadPdf = () => {
+    const previousTitle = document.title;
+    document.title = `Market Rhythm - ${period?.label || 'report'}`;
+    const restoreTitle = () => {
+      document.title = previousTitle;
+      window.removeEventListener('afterprint', restoreTitle);
+    };
+    window.addEventListener('afterprint', restoreTitle);
+    window.print();
+  };
 
   useEffect(() => {
     fetch('/data/heatmap.json')
@@ -74,7 +85,7 @@ function App() {
           <span className="brand-mark"><Activity size={21} /></span>
           <span><strong>MARKET INTELLIGENCE</strong><small>MARKET RHYTHM</small></span>
         </a>
-        <div className="topbar-right"><span className="status-dot" /> Dataset tersedia <span className="topbar-divider" /> <span className="date-stamp">Updated {dataset.last_updated}</span></div>
+        <div className="topbar-right"><span className="status-dot" /> Dataset tersedia <span className="topbar-divider" /> <span className="date-stamp">Updated {dataset.last_updated}</span><button className="download-button" onClick={downloadPdf} title="Unduh laporan sebagai PDF"><Download size={14} /><span>Unduh PDF</span></button></div>
       </header>
 
       <main className="content">
