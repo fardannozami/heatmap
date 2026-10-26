@@ -48,3 +48,8 @@ The production files are generated in `dist/`. You can deploy that folder to any
 ## Notes
 
 This is a frontend recreation of the supplied source. It does not reproduce any original server-side password/access-control behavior. Do not publish any restricted data unless you have permission to do so.
+
+### Additional view from `tmchronoheatmap2`
+
+- Toggle to **Perbandingan periode · ±50 pip** to compare the six historical periods side by side at the ±50 pip target, matching the layout embedded in the newly supplied `Trader Minoritas Chrono Heatmap 2` HTML.
+- This view uses the same recovered dataset; it does not add a new live data source.

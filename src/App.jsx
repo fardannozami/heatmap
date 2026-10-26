@@ -7,6 +7,7 @@ const timeLabel = (minute) => `${pad(Math.floor(minute / 60))}:${pad(minute % 60
 function App() {
   const [dataset, setDataset] = useState(null);
   const [periodIndex, setPeriodIndex] = useState(0);
+  const [viewMode, setViewMode] = useState('targets');
   const [query, setQuery] = useState('');
   const [direction, setDirection] = useState('ALL');
   const [selectedCell, setSelectedCell] = useState(null);
@@ -25,6 +26,16 @@ function App() {
   const rows = useMemo(() => {
     if (!period || !dataset) return [];
     const normalizedQuery = query.trim();
+    if (viewMode === 'periods') {
+      const targetIndex = dataset.targets_pips.indexOf(50);
+      return Array.from({ length: 1440 }, (_, minute) => ({
+        minute, time: timeLabel(minute),
+        cells: dataset.periods.map((p, periodColumnIndex) => ({
+          cell: p.cells[minute][targetIndex], target: 50, targetIndex,
+          periodLabel: p.label, periodColumnIndex
+        })).filter(({ cell }) => direction === 'ALL' || cell[0] === direction)
+      })).filter((row) => !normalizedQuery || row.time.includes(normalizedQuery));
+    }
     return period.cells
       .map((cells, minute) => ({ minute, time: timeLabel(minute), cells }))
       .filter((row) => !normalizedQuery || row.time.includes(normalizedQuery))
@@ -33,7 +44,7 @@ function App() {
         cells: row.cells.map((cell, targetIndex) => ({ cell, target: dataset.targets_pips[targetIndex], targetIndex }))
           .filter(({ cell }) => direction === 'ALL' || cell[0] === direction)
       }));
-  }, [period, dataset, query, direction]);
+  }, [period, dataset, query, direction, viewMode]);
 
   const stats = useMemo(() => {
     if (!period || !dataset) return null;
@@ -74,7 +85,13 @@ function App() {
           <div className="notice"><Info size={16} /><span>Statistik kecenderungan historis — bukan prediksi, sinyal, atau rekomendasi trading.</span></div>
         </section>
 
-        <section className="control-panel">
+        <section className="view-mode-panel">
+          <span className="view-mode-label">TAMPILAN HEATMAP</span>
+          <button className={`view-mode-button ${viewMode === 'targets' ? 'active' : ''}`} onClick={() => { setViewMode('targets'); setSelectedCell(null); }}>Target pip per periode</button>
+          <button className={`view-mode-button ${viewMode === 'periods' ? 'active' : ''}`} onClick={() => { setViewMode('periods'); setSelectedCell(null); }}>Perbandingan periode · ±50 pip</button>
+        </section>
+
+        {viewMode === 'targets' && <section className="control-panel">
           <div className="control-label"><CalendarDays size={16} /><span>Periode historis</span></div>
           <div className="period-options">
             {dataset.periods.map((item, index) => (
@@ -84,18 +101,18 @@ function App() {
             ))}
           </div>
           <div className="period-range"><span>Rentang data</span><strong>{period.from} <span className="range-arrow">→</span> {period.until}</strong></div>
-        </section>
+        </section>}
 
-        <section className="stats-grid">
+        {viewMode === 'targets' && <section className="stats-grid">
           <div className="stat-card"><div className="stat-top"><span>UP records</span><span className="stat-icon up-icon"><Activity size={17} /></span></div><strong>{stats.up.toLocaleString('id-ID')}</strong><small>Sel dengan arah naik</small></div>
           <div className="stat-card"><div className="stat-top"><span>DOWN records</span><span className="stat-icon down-icon"><Activity size={17} /></span></div><strong>{stats.down.toLocaleString('id-ID')}</strong><small>Sel dengan arah turun</small></div>
           <div className="stat-card"><div className="stat-top"><span>Neutral records</span><span className="stat-icon neutral-icon"><Database size={17} /></span></div><strong>{stats.neutral.toLocaleString('id-ID')}</strong><small>Sel netral / tanpa arah dominan</small></div>
           <div className="stat-card"><div className="stat-top"><span>Spread assumption</span><span className="stat-icon neutral-icon"><SlidersHorizontal size={17} /></span></div><strong>{dataset.spread_assumption_pips} <em>pip</em></strong><small>Asumsi spread pada sumber</small></div>
-        </section>
+        </section>}
 
         <section className="heatmap-section">
           <div className="heatmap-heading">
-            <div><div className="section-kicker"><Clock3 size={15} /> 24-HOUR OVERVIEW</div><h2>Time × Pip Target</h2><p>Setiap sel berisi arah dominan, probabilitas, dan jumlah observasi.</p></div>
+            <div><div className="section-kicker"><Clock3 size={15} /> 24-HOUR OVERVIEW</div><h2>{viewMode === 'periods' ? 'Time × Historical Period' : 'Time × Pip Target'}</h2><p>{viewMode === 'periods' ? 'Bandingkan enam periode historis untuk target ±50 pip, seperti tampilan Chrono Heatmap 2.' : 'Setiap sel berisi arah dominan, probabilitas, dan jumlah observasi.'}</p></div>
             <div className="legend"><span><i className="legend-dot up" /> UP</span><span><i className="legend-dot down" /> DOWN</span><span><i className="legend-dot neutral" /> NEUTRAL</span></div>
           </div>
 
@@ -106,29 +123,29 @@ function App() {
 
           <div className="heatmap-wrap">
             <table className="heatmap-table">
-              <thead><tr><th className="time-head">WAKTU<br/><small>WIB</small></th>{dataset.targets_pips.map((target) => <th key={target}>±{target}<small>pip</small></th>)}</tr></thead>
+              <thead><tr><th className="time-head">WAKTU<br/><small>WIB</small></th>{(viewMode === 'periods' ? dataset.periods.map((p) => p.label) : dataset.targets_pips.map((target) => `±${target}`)).map((label) => <th key={label}>{label}<small>{viewMode === 'periods' ? '±50 pip' : 'pip'}</small></th>)}</tr></thead>
               <tbody>
                 {rows.map((row) => <tr key={row.minute}>
                   <th className="time-cell">{row.time}</th>
-                  {row.cells.map(({ cell, target, targetIndex }) => (
-                    <td key={target} className="heat-cell-wrap">
-                      <button className={`heat-cell ${toneClass(cell)} ${selectedCell?.minute === row.minute && selectedCell?.targetIndex === targetIndex ? 'selected' : ''}`}
-                        onClick={() => setSelectedCell({ minute: row.minute, time: row.time, target, targetIndex, cell })}
-                        title={`${row.time} · ±${target} pip · ${cell[0]} · ${cell[1].toFixed(1)}% · ${cell[2]} observasi · ${cell[3]} void`}>
+                  {row.cells.map(({ cell, target, targetIndex, periodLabel, periodColumnIndex }) => (
+                    <td key={viewMode === 'periods' ? periodLabel : target} className="heat-cell-wrap">
+                      <button className={`heat-cell ${toneClass(cell)} ${selectedCell?.minute === row.minute && selectedCell?.targetIndex === targetIndex && (viewMode !== 'periods' || selectedCell?.periodColumnIndex === periodColumnIndex) ? 'selected' : ''}`}
+                        onClick={() => setSelectedCell({ minute: row.minute, time: row.time, target, targetIndex, periodLabel, periodColumnIndex, cell })}
+                        title={`${row.time} · ${viewMode === 'periods' ? `${periodLabel} · ` : ''}±${target} pip · ${cell[0]} · ${cell[1].toFixed(1)}% · ${cell[2]} observasi · ${cell[3]} void`}>
                         <span>{cell[0]}</span><strong>{cell[1].toFixed(1)}%</strong>
                       </button>
                     </td>
                   ))}
                 </tr>)}
-                {rows.length === 0 && <tr><td colSpan={11} className="empty-state">Tidak ada waktu yang cocok dengan pencarian.</td></tr>}
+                {rows.length === 0 && <tr><td colSpan={viewMode === 'periods' ? 7 : 11} className="empty-state">Tidak ada waktu yang cocok dengan pencarian.</td></tr>}
               </tbody>
             </table>
           </div>
-          <div className="table-footer"><span>Menampilkan {rows.length.toLocaleString('id-ID')} dari 1.440 menit per hari</span><span><i className="tiny-dot" /> Dataset historis dipulihkan dari HTML sumber</span></div>
+          <div className="table-footer"><span>Menampilkan {rows.length.toLocaleString('id-ID')} dari 1.440 menit per hari {viewMode === 'periods' ? '· target ±50 pip' : ''}</span><span><i className="tiny-dot" /> Dataset historis dipulihkan dari HTML sumber</span></div>
         </section>
 
         {selectedCell && <section className="detail-panel">
-          <div><div className="section-kicker">DETAIL SEL TERPILIH</div><h3>{selectedCell.time} WIB <span>·</span> ±{selectedCell.target} pip</h3></div>
+          <div><div className="section-kicker">DETAIL SEL TERPILIH</div><h3>{selectedCell.time} WIB <span>·</span> {selectedCell.periodLabel ? `${selectedCell.periodLabel} · ` : ''}±{selectedCell.target} pip</h3></div>
           <div className="detail-values">
             <div><small>Direction</small><strong className={selectedCell.cell[0].toLowerCase()}>{selectedCell.cell[0]}</strong></div>
             <div><small>Probability</small><strong>{selectedCell.cell[1].toFixed(2)}%</strong></div>

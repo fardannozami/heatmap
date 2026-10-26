@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "update:heatmap": "node scripts/update-heatmap.mjs",
-    "update:heatmap:hfm": "node scripts/update-heatmap.mjs --csv=./data/hfm_xauusd_m1.csv"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
